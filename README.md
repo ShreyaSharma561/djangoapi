@@ -1,4 +1,4 @@
-echo "# Django Blog API
+# Django Blog API
 
 A full-stack blog application with Django REST API backend and React frontend.
 
