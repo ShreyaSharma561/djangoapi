@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {% block title %}
+        Blog Application
+      {% endblock %}
+    </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+      .navbar-brand {
+        font-weight: bold;
+        font-size: 1.5rem;
+      }
+      .card {
+        transition: transform 0.2s;
+        height: 100%;
+      }
+      {% block style %}
+      {% endblock %}
+      
+      .icons{
+        display: flex;
+        justify-content: center;
+      }
+      .fa {
+        padding: 15px;
+        font-size: 30px;
+        width: 50px;
+        text-align: center;
+        text-decoration: none;
+        margin: 5px;
+        }
+      
+      .fa:hover { 
+        opacity: 0.8; 
+      }
+
+      ul.footer{
+        display: flex;
+        justify-content: center;
+        gap: 10%;
+      }
+
+      ul.footer li a {
+        text-decoration : none;
+        color: black;
+      }
+
+      ul.footer li{
+        list-style: none;
+      }
+
+      footer{
+        background-color: thistle;
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">BlogApp</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/create/">Create a blog</a>
+            </li>
+           <div id="auth" class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/dashboard/">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout/">Logout</a>
+            </li>
+          </div>
+          <div id="notauth" class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/login/">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/register/">Register</a>
+            </li>
+          </div>
+          </ul>
+        </div>
+      </div>
+    </nav>
+      
+
+      <div class="container mt-3">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+    
+
+    <main class="container my-4">
+      {% block content %}
+      {% endblock %}
+
+      {% block main %}
+      {% endblock %}
+    </main>
+
+    <footer>
+      <hr>
+      <div class = "icons">
+        <a href="#" class="fa fa-facebook"></a>
+        <a href="#" class="fa fa-twitter"></a>
+        <a href="#" class="fa fa-google"></a>
+      </div>
+      <div>
+        <ul class="footer">
+            <li class="footer-item">
+              <a class="footer-link" href="/">Home</a>
+            </li>
+            <li class="footer-item">
+              <a class="footer-link" href="/blog/create/">Services</a>
+            </li>
+            <li>
+              <a class="footer-link" href="/">About</a>
+            </li>
+          </ul>
+      </div>
+      <div class="bg-dark text-white text-center py-3">
+        &copy; {{ current_year }} BlogApp. All rights reserved.
+      </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}
+    {% endblock %}
+    <script>
+      const authenticated = document.getElementById("auth")
+      const notAuthenticated = document.getElementById("notauth")
+ 
+      if (localStorage.getItem("token")){
+          authenticated.classList.remove("d-none")
+          notAuthenticated.classList.add("d-none")
+      }
+      else{
+          authenticated.classList.add("d-none")
+          notAuthenticated.classList.remove("d-none")
+      }
+
+    </script>
+  </body>
+</html>

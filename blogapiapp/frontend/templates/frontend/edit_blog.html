@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Blog - BlogApp{% endblock %}
+
+{% block style %}
+    div.containers{
+        width: 80%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 5px;
+        border: 2px solid;
+        border-radius: 10px;
+        background-color: aliceblue;
+    }
+
+    main.container{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .form-control{
+        width:80%; !important
+    }
+{% endblock %}
+
+{% block content %}
+<h2>Edit Blog</h2>
+<div class="containers">
+    <h3>Title</h3>
+    <input id="title" style="width:80%;"><br>
+    
+    <h3>Content</h3>
+    <textarea id="content" style="width:80%; height:200px"></textarea><br>
+    
+    <h3>Category</h3>
+    <select class="form-control" name="category" id="category">
+        <option value="" selected="">--------</option>
+        <option value="tech">Tech</option>
+        <option value="lifestyle">Lifestyle</option>
+        <option value="education">Education</option>
+        <option value="other">Other</option>
+    </select><br>
+    
+    <h3>Featured Image</h3>
+    <input type="file" id="featured_image"><br>
+    
+    <h3>Status</h3>
+    <select class="form-control" name="status" id="status">
+        <option value="draft">Draft</option>
+        <option value="published">Published</option>
+    </select><br>
+
+    <button onclick="updateBlog()">Update</button>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const postId = {{ post_id }};
+
+fetch(`/posts/${postId}/`)
+.then(res => res.json())
+.then(post => {
+    title.value = post.title;
+    content.value = post.content;
+    category.value = post.category || '';
+    status.value = post.status || 'draft';
+});
+
+function updateBlog(){
+    fetch(`/api/posts/${postId}/`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({
+            title: title.value,
+            content: content.value,
+            category: category.value,
+            status: status.value
+        })
+    }).then(() => window.location.href = "/dashboard/");
+}
+</script>
+{% endblock %}

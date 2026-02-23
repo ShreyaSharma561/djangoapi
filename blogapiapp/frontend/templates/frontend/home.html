@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - BlogApp{% endblock %}
+
+{% block style %}
+#maincontainer{
+    max-width:1200px;
+    margin:auto;
+    padding:20px;
+}
+
+.blog-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap:20px;
+}
+
+.blog-card{
+    background:#fff;
+    border-radius:12px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+}
+
+.blog-card img{
+    width:100%;
+    height:200px;
+    object-fit:cover;
+}
+
+.blog-body{
+    padding:15px;
+    flex-grow:1;
+}
+
+.blog-body h3{
+    margin-bottom:10px;
+}
+
+.blog-body p{
+    color:#555;
+    font-size:15px;
+}
+
+.meta{
+    font-size:13px;
+    color:gray;
+    margin-top:10px;
+}
+
+.read-more{
+    text-align:center;
+    padding:12px;
+    background:#0d6efd;
+    color:#fff;
+    text-decoration:none;
+    font-weight:500;
+}
+
+.read-more:hover{
+    background:#084298;
+}
+{% endblock %}
+
+{% block content %}
+<h1>
+    <marquee>Latest Blog Posts</marquee>
+</h1>
+
+<div id="maincontainer">
+    <div id="blogs" class="blog-grid">Loading blogs...</div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+fetch("/api/posts/")
+
+.then(res => res.json())
+.then(data => {
+    const container = document.getElementById("blogs");
+    
+    const publishedpost = data.filter(post => post.status === "published");
+    
+    if(publishedpost.length === 0){
+        container.innerHTML = "<p>No blogs available.</p>";
+        return;
+    }
+
+    container.innerHTML = publishedpost.map(post => `
+        <div class="blog-card">
+            ${post.featured_image ? `<img src="${post.featured_image}" alt="${post.title}">` : ''}
+            
+            <div class="blog-body">
+                <h3>${post.title}</h3>
+                <p>${post.content.substring(0,120)}...</p>
+
+                <div class="meta">
+                    By ${post.author_name || 'Anonymous'} |
+                    ${new Date(post.created_at).toLocaleDateString()}
+                </div>
+            </div>
+
+            <a href="/posts/${post.id}/" class="read-more">Read More</a>
+        </div>
+    `).join("");
+})
+.catch(err => {
+    console.error(err);
+    document.getElementById("blogs").innerHTML = "<p>Error loading posts.</p>";
+});
+</script>
+{% endblock %}
