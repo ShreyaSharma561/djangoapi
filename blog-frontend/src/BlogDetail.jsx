@@ -118,10 +118,7 @@ function BlogDetail() {
           </span>
         </div>
 
-        
-        <div className="blog-content-text">
-          {blog.content}
-        </div>
+        <div className="blog-content-text" dangerouslySetInnerHTML={{ __html: blog.content }}></div>
 
         
         {blog.updated_at !== blog.created_at && (

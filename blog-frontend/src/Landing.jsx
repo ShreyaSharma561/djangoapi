@@ -81,9 +81,7 @@ function Landing() {
 
                                         <h3>{blog.title}</h3>
 
-                                        <p className="blog-excerpt">
-                                            {blog.content.substring(0, 150)}...
-                                        </p>
+                                        <p className="blog-excerpt" dangerouslySetInnerHTML={{ __html: blog.content.substring(0, 150) + '...' }}></p>
 
                                         <div className="blog-footer">
                                             <span className="author">By {blog.author_name || 'Anonymous'}</span>
