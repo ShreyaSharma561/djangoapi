@@ -9,32 +9,38 @@ function Dashboard() {
   const username = localStorage.getItem('username');
   const token = localStorage.getItem('token');
 
-  useEffect(() => {
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-    fetchBlogs();
-  }, []);
+ useEffect(() => {
+  if (!token) {
+    navigate('/login');
+    return;
+  }
+
+  fetchBlogs();
+
+}, [token]); 
 
   const fetchBlogs = async () => {
-    try {
-      const response = await axios.get('http://127.0.0.1:8000/api/posts/', {
-        headers: {
-          'Authorization': `Token ${token}`
-        }
-      });
-      
-      const myBlogs = response.data.filter(blog => blog.author_name === username);
-      setBlogs(myBlogs);
-      setLoading(false);
-      
-    } catch (err) {
-      console.error('Error:', err);
-      setLoading(false);
-    }
-  };
+  try {
+    const token = localStorage.getItem("token");
 
+    const response = await axios.get("http://127.0.0.1:8000/api/posts/", {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    });
+
+    const myBlogs = response.data.filter(
+      (blog) => blog.author_name === username
+    );
+
+    setBlogs(myBlogs);
+
+  } catch (err) {
+    console.error("ERROR:", err.response?.data);
+  } finally {
+    setLoading(false);
+  }
+};
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this blog?')) return;
     
@@ -84,7 +90,7 @@ function Dashboard() {
               )}
               
               <h3>{blog.title}</h3>
-              <p>{blog.content.substring(0, 150)}...</p>
+              <p dangerouslySetInnerHTML={{ __html: blog.content.substring(0, 150) + '...' }} />
               
               <div className="blog-meta">
                 <span className={`badge ${blog.status}`}>{blog.status}</span>

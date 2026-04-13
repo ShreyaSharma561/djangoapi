@@ -41,32 +41,40 @@ function CreateBlog() {
   ];
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('content', content);
-    formData.append('category', category);
-    formData.append('status', status);
-    if (image) {
-      formData.append('featured_image', image);
-    }
+  if (!token) {
+    alert("Please login first");
+    navigate("/login");
+    return;
+  }
 
-    try {
-      await axios.post('http://127.0.0.1:8000/api/posts/', formData, {
-        headers: {
-          'Authorization': `Token ${token}`,
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+  const formData = new FormData();
+  formData.append('title', title);
+  formData.append('content', content);
+  formData.append('category', category);
+  formData.append('status', status);
 
-      alert('Blog created!');
-      navigate('/dashboard');
+  if (image) {
+    formData.append('featured_image', image);
+  }
 
-    } catch (err) {
-      alert('Error creating blog');
-    }
-  };
+  try {
+    await axios.post('http://127.0.0.1:8000/api/posts/', formData, {
+      headers: {
+        Authorization: `Token ${token}`,
+      }
+    });
+
+    alert('Blog created!');
+    navigate('/dashboard');
+
+  } catch (err) {
+    console.error(err.response?.data); 
+    alert('Error creating blog');
+  }
+};
+  
 
   return (
     <div className="create-container">
